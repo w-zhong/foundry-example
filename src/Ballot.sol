@@ -49,6 +49,9 @@ contract Ballot {
         require(!sender.voted, "You have already voted.");
         require(to != msg.sender, "Self-delegation is not allowed.");
 
+        // 如果to地址已经有delegate，那么to地址改为delegate地址
+        // 如此一直传递，直到to地址没有delegate
+        // 注意此过程中不能形成闭环
         while (voters[to].delegate != address(0)) {
             to = voters[to].delegate;
             require(to != msg.sender, "Found loop in delegation.");
